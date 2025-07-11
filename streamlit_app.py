@@ -21,8 +21,8 @@ with st.form("bean_calc_form"):
             "name": name,
             "beans_earned": beans_earned,
             "salary_usd": salary_usd
+        submitted = st.form_submit_button("Calculate")
         })
-    submitted = st.form_submit_button("Calculate")
 
 # Process form data
 if submitted:
