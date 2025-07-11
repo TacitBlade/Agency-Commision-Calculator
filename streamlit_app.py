@@ -91,7 +91,6 @@ with st.form("bean_calc_form"):
         st.markdown(f"#### Agent {i+1}")
         name = st.text_input(f"Name", key=f"name_{i}")
         beans_earned = st.number_input("Beans Earned by Host", key=f"beans_{i}")
-        target_hit = st.number_input("Target Hit", key=f"target_hit_{i}")
 
         salary_usd = get_salary_from_target(target_hit)
 
