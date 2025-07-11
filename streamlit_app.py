@@ -79,7 +79,9 @@ st.set_page_config(page_title="Agent Bean Calculator", layout="centered")
 custom_name = st.text_input("Enter Your App Name", value="🎯 Agent Bean Calculator")
 
 # Display custom title
-st.title(custom_name)
+st.title("Agent Beans Dashboard")
+st.subheader("📊 Agent Totals Summary")  # ← Clean, top-level call
+
 
 # Form input
 with st.form("bean_calc_form"):
