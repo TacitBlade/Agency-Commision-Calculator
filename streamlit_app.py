@@ -145,10 +145,32 @@ if submitted:
             output.getvalue(),
             file_name="agent_bean_results.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            
+        def display_agent_breakdown(results):
+    st.subheader("📊 Agent Totals Summary")
+
+    for row in results:
+        bean_value = (
+            int(row['Total Beans'])
+            if isinstance(row['Total Beans'], (int, float)) and row['Total Beans'] == int(row['Total Beans'])
+            else round(row['Total Beans'], 2)
         )
 
-        # Per-agent breakdown
-        st.subheader("📊 Agent Totals Summary")
-        for row in results:
-        bean_value = int(row['Total Beans']) if isinstance(row['Total Beans'], (int, float)) and row['Total Beans'] == int(row['Total Beans']) else round(row['Total Beans'], 2)
-        st.metric(label=f"{row['Agent']}", value=f"{bean_value} Beans")
+        # Layout: split into three columns
+        col1, col2, col3 = st.columns([2, 1, 2])
+
+        # Agent name
+        with col1:
+            st.markdown(f"### 🧑‍💼 {row['Agent']}")
+
+        # Bean metric
+        with col2:
+            st.metric(label="Beans", value=f"{bean_value}")
+
+        # Diamond breakdown
+        with col3:
+            breakdown = row.get("Diamond Breakdown", "")
+            st.markdown(f"💎 {breakdown if breakdown else '—'}")
+
+
+       
