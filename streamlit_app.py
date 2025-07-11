@@ -148,4 +148,4 @@ if submitted:
         # Per-agent breakdown
         st.subheader("📊 Agent Totals Summary")
         for row in results:
-            bean_value = int(row["Total Beans"]) if row["Total Beans"] == int(row["Total Beans"]) else 
+            bean_value = int(row["Total Beans"]) if row["Total Beans"] == int(row["Total Beans"])
