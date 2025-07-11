@@ -146,6 +146,7 @@ if submitted:
         )
 
         # Per-agent breakdown
-        st.subheader("📊 Agent Totals Summary")
+              st.subheader("📊 Agent Totals Summary")
         for row in results:
-            bean_value = int(row["Total Beans"]) if row["Total Beans"] == int(row["Total Beans"])
+            bean_value = int(row['Total Beans']) if isinstance(row['Total Beans'], (int, float)) and row['Total Beans'] == int(row['Total Beans']) else round(row['Total Beans'], 2)
+            st.metric(label=f"{row['Agent']}", value=f"{bean_value} Beans")
