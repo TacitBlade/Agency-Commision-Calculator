@@ -145,6 +145,7 @@ if submitted:
             output.getvalue(),
             file_name="agent_bean_results.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
             
         def display_agent_breakdown(results):
     st.subheader("📊 Agent Totals Summary")
