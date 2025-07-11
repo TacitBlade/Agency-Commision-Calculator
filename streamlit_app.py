@@ -148,7 +148,7 @@ if submitted:
         )
             
         def display_agent_breakdown(results):
-    st.subheader("📊 Agent Totals Summary")
+            st.subheader("📊 Agent Totals Summary")
 
     for row in results:
         bean_value = (
