@@ -2,6 +2,45 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
+# Tiered salary structure
+TIERED_SALARY = [
+    
+(6000000, 10200),
+(5000000, 9200),
+(4000000, 7650),
+(3000000, 5900),
+(2000000, 3925),
+(1500000, 2950),
+(1000000, 2000),
+(800000, 1613),
+(600000, 1220),
+(450000, 945),
+(350000, 735),
+(250000, 525),
+(170000, 361),
+(130000, 281),
+(120000, 263),
+(110000, 243),
+(100000, 221),
+(90000, 200),
+(80000, 178),
+(70000, 156),
+(60000, 134),
+(50000, 112),
+(40000, 89),
+(30000, 67),
+(20000, 45),
+(10000, 23),
+(5000, 23),
+(0, 0)
+]
+
+def get_salary_usd(beans_earned):
+    for threshold, salary in TIERED_SALARY:
+        if beans_earned >= threshold:
+            return salary
+    return 0
+
 # Function to calculate salary in beans, commission, and total
 def calculate_total_beans(beans_earned, salary_usd):
     salary_beans = salary_usd * 210
@@ -42,8 +81,8 @@ with st.form("bean_calc_form"):
     for i in range(int(num_agents)):
         with st.expander(f"🧍 Agent {i+1} Details", expanded=True):
             name = st.text_input("Name", key=f"name_{i}")
-            beans_earned = st.number_input("Beans Earned by Host 🎭", min_value=0.0, step=100.0, key=f"beans_{i}")
-            salary_usd = st.number_input("Basic Salary 💵 (USD)", min_value=0.0, step=100.0, key=f"salary_{i}")
+            beans_earned = st.number_input("Beans Earned by Host 🎭", min_value=0, step=100, key=f"beans_{i}")
+            salary_usd = st.number_input("Basic Salary 💵 (USD)", min_value=0, step=100, key=f"salary_{i}")
             agents_input.append({
                 "name": name.strip(),
                 "beans_earned": beans_earned,
