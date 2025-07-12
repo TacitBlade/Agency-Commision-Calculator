@@ -2,45 +2,6 @@ import streamlit as st
 import pandas as pd
 from io import BytesIO
 
-# Tiered salary structure
-TIERED_SALARY = [
-    
-(6000000, 10200),
-(5000000, 9200),
-(4000000, 7650),
-(3000000, 5900),
-(2000000, 3925),
-(1500000, 2950),
-(1000000, 2000),
-(800000, 1613),
-(600000, 1220),
-(450000, 945),
-(350000, 735),
-(250000, 525),
-(170000, 361),
-(130000, 281),
-(120000, 263),
-(110000, 243),
-(100000, 221),
-(90000, 200),
-(80000, 178),
-(70000, 156),
-(60000, 134),
-(50000, 112),
-(40000, 89),
-(30000, 67),
-(20000, 45),
-(10000, 23),
-(5000, 23),
-(0, 0)
-]
-
-def get_salary_usd(beans_earned):
-    for threshold, salary in TIERED_SALARY:
-        if beans_earned >= threshold:
-            return salary
-    return 0
-
 # Function to calculate salary in beans, commission, and total
 def calculate_total_beans(beans_earned, salary_usd):
     salary_beans = salary_usd * 210
@@ -69,14 +30,9 @@ def convert_beans_to_diamonds(beans):
 
     return diamonds, ', '.join(breakdown)
 
-def format_number(val):
-    if isinstance(val, float) and val.is_integer():
-        return int(val)
-    return round(val, 2) if isinstance(val, float) else val
-
 # Streamlit app configuration
-st.set_page_config(page_title="Agent Commission Calculator", layout="centered")
-st.title("🎯 Agent Commission Calculator")
+st.set_page_config(page_title="Agent Bean Calculator", layout="centered")
+st.title("🎯 Agent Bean Calculator")
 
 # Form input
 with st.form("bean_calc_form"):
@@ -86,8 +42,8 @@ with st.form("bean_calc_form"):
     for i in range(int(num_agents)):
         with st.expander(f"🧍 Agent {i+1} Details", expanded=True):
             name = st.text_input("Name", key=f"name_{i}")
-            beans_earned = st.number_input("Beans Earned by Host 🎭", min_value=0, step=100, key=f"beans_{i}")
-            salary_usd = st.TIERED_SALARYS.get("Basic Salary 💵 (USD)", min_value=0, step=100, key=f"salary_{i}")
+            beans_earned = st.number_input("Beans Earned by Host 🎭", min_value=0.0, step=100.0, key=f"beans_{i}")
+            salary_usd = st.number_input("Basic Salary 💵 (USD)", min_value=0.0, step=100.0, key=f"salary_{i}")
             agents_input.append({
                 "name": name.strip(),
                 "beans_earned": beans_earned,
@@ -96,19 +52,16 @@ with st.form("bean_calc_form"):
 
     submitted = st.form_submit_button("Calculate")
 
-# Output calculation
+# Process form data
 if submitted:
-    # Basic validation
     if any(agent["name"] == "" for agent in agents_input):
         st.error("🚫 Please enter a name for every agent.")
     else:
         results = []
         for agent in agents_input:
-            salary_beans, commission, total = calculate_total_beans(
-                agent["beans_earned"],
-                agent["salary_usd"]
-            )
+            salary_beans, commission, total = calculate_total_beans(agent["beans_earned"], agent["salary_usd"])
             diamonds, breakdown = convert_beans_to_diamonds(total)
+
             results.append({
                 "Agent": agent["name"],
                 "Beans Earned": int(agent["beans_earned"]) if agent["beans_earned"].is_integer() else round(agent["beans_earned"], 2),
@@ -120,19 +73,20 @@ if submitted:
                 "Diamond Breakdown": breakdown
             })
 
-        df = pd.DataFrame(results)
+        # Remove breakdown from main table
+        df = pd.DataFrame([{k: v for k, v in r.items() if k != "Diamond Breakdown"} for r in results])
         df = df.sort_values(by="Total Beans", ascending=False)
 
         st.success("✅ Calculations complete!")
         st.dataframe(df.style.set_properties(**{'text-align': 'center'}), use_container_width=True)
 
-        # Summary metric
+        # Totals
         total_all = df["Total Beans"].sum()
         total_diamonds = df["Diamonds"].sum()
         st.info(f"💰 **Total Beans Across All Agents:** {int(total_all) if total_all.is_integer() else round(total_all, 2)}")
         st.success(f"💎 **Total Diamonds for All Agents:** {total_diamonds}")
 
-        # Download option
+        # Excel download
         output = BytesIO()
         df.to_excel(output, index=False, sheet_name='Agent Beans')
         st.download_button(
@@ -142,8 +96,9 @@ if submitted:
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
-        # Optional metrics per agent
+        # Per-agent breakdown
         st.subheader("📊 Agent Totals Summary")
         for row in results:
-            bean_value = int(row['Total Beans']) if isinstance(row['Total Beans'], (int, float)) and row['Total Beans'] == int(row['Total Beans']) else round(row['Total Beans'], 2)
-            st.metric(label=f"{row['Agent']}", value=f"{bean_value} Beans")
+            bean_value = int(row['Total Beans']) if row['Total Beans'] == int(row['Total Beans']) else round(row['Total Beans'], 2)
+            st.metric(label=row['Agent'], value=f"{bean_value} Beans / {row['Diamonds']} Diamonds")
+            st.caption(f"💎 Breakdown: {row['Diamond Breakdown']}")
