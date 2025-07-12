@@ -4,35 +4,34 @@ from io import BytesIO
 
 # Tiered salary structure
 TIERED_SALARY = [
-    
-(6000000, 10200),
-(5000000, 9200),
-(4000000, 7650),
-(3000000, 5900),
-(2000000, 3925),
-(1500000, 2950),
-(1000000, 2000),
-(800000, 1613),
-(600000, 1220),
-(450000, 945),
-(350000, 735),
-(250000, 525),
-(170000, 361),
-(130000, 281),
-(120000, 263),
-(110000, 243),
-(100000, 221),
-(90000, 200),
-(80000, 178),
-(70000, 156),
-(60000, 134),
-(50000, 112),
-(40000, 89),
-(30000, 67),
-(20000, 45),
-(10000, 23),
-(5000, 23),
-(0, 0)
+    (6000000, 10200),
+    (5000000, 9200),
+    (4000000, 7650),
+    (3000000, 5900),
+    (2000000, 3925),
+    (1500000, 2950),
+    (1000000, 2000),
+    (800000, 1613),
+    (600000, 1220),
+    (450000, 945),
+    (350000, 735),
+    (250000, 525),
+    (170000, 361),
+    (130000, 281),
+    (120000, 263),
+    (110000, 243),
+    (100000, 221),
+    (90000, 200),
+    (80000, 178),
+    (70000, 156),
+    (60000, 134),
+    (50000, 112),
+    (40000, 89),
+    (30000, 67),
+    (20000, 45),
+    (10000, 23),
+    (5000, 23),
+    (0, 0)
 ]
 
 def get_salary_usd(beans_earned):
@@ -69,6 +68,11 @@ def convert_beans_to_diamonds(beans):
 
     return diamonds, ', '.join(breakdown)
 
+def format_number(val):
+    if isinstance(val, float) and val.is_integer():
+        return int(val)
+    return round(val, 2) if isinstance(val, float) else val
+
 # Streamlit app configuration
 st.set_page_config(page_title="Agent Bean Calculator", layout="centered")
 st.title("🎯 Agent Bean Calculator")
@@ -82,7 +86,7 @@ with st.form("bean_calc_form"):
         with st.expander(f"🧍 Agent {i+1} Details", expanded=True):
             name = st.text_input("Name", key=f"name_{i}")
             beans_earned = st.number_input("Beans Earned by Host 🎭", min_value=0, step=100, key=f"beans_{i}")
-            salary_usd = st.number_input("Basic Salary 💵 (USD)", min_value=0, step=100, key=f"salary_{i}")
+            salary_usd = get_salary_usd(beans_earned)
             agents_input.append({
                 "name": name.strip(),
                 "beans_earned": beans_earned,
@@ -106,11 +110,11 @@ if submitted:
             diamonds, breakdown = convert_beans_to_diamonds(total)
             results.append({
                 "Agent": agent["name"],
-                "Beans Earned": int(agent["beans_earned"]) if agent["beans_earned"].is_integer() else round(agent["beans_earned"], 2),
-                "Salary (USD)": int(agent["salary_usd"]) if agent["salary_usd"].is_integer() else round(agent["salary_usd"], 2),
-                "Salary in Beans": int(salary_beans) if salary_beans.is_integer() else round(salary_beans, 2),
-                "5% Commission": int(commission) if commission.is_integer() else round(commission, 2),
-                "Total Beans": int(total) if total.is_integer() else round(total, 2),
+                "Beans Earned": format_number(agent["beans_earned"]),
+                "Salary (USD)": format_number(agent["salary_usd"]),
+                "Salary in Beans": format_number(salary_beans),
+                "5% Commission": format_number(commission),
+                "Total Beans": format_number(total),
                 "Diamonds": int(diamonds),
                 "Diamond Breakdown": breakdown
             })
@@ -124,7 +128,7 @@ if submitted:
         # Summary metric
         total_all = df["Total Beans"].sum()
         total_diamonds = df["Diamonds"].sum()
-        st.info(f"💰 **Total Beans Across All Agents:** {int(total_all) if total_all.is_integer() else round(total_all, 2)}")
+        st.info(f"💰 **Total Beans Across All Agents:** {format_number(total_all)}")
         st.success(f"💎 **Total Diamonds for All Agents:** {total_diamonds}")
 
         # Download option
@@ -140,5 +144,5 @@ if submitted:
         # Optional metrics per agent
         st.subheader("📊 Agent Totals Summary")
         for row in results:
-            bean_value = int(row['Total Beans']) if isinstance(row['Total Beans'], (int, float)) and row['Total Beans'] == int(row['Total Beans']) else round(row['Total Beans'], 2)
+            bean_value = format_number(row['Total Beans'])
             st.metric(label=f"{row['Agent']}", value=f"{bean_value} Beans")
