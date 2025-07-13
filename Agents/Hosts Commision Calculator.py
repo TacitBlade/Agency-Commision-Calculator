@@ -78,7 +78,7 @@ with st.form("bean_calc_form"):
     agents_input = []
 
     for i in range(int(num_agents)):
-        with st.expander(f"🧝 Agent {i+1} Details", expanded=True):
+        with st.expander(f"🧝 Host {i+1} Details", expanded=True):
             name = st.text_input("Name", key=f"name_{i}")
             beans_earned = st.number_input("Beans🫘 Earned by Host 🎭", min_value=0, step=100, key=f"beans_{i}")
             salary_usd = get_salary_usd(beans_earned)
