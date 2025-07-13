@@ -74,7 +74,7 @@ st.title("🎯 Agency Commission Calculator")
 
 # Form input
 with st.form("bean_calc_form"):
-    num_agents = st.number_input("How many agents?", min_value=1, step=1)
+    num_agents = st.number_input("How many Hosts?", min_value=0, step=1)
     agents_input = []
 
     for i in range(int(num_agents)):
