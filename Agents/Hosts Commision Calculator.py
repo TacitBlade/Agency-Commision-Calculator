@@ -135,7 +135,7 @@ if submitted:
         )
 
         # Per-agent breakdown
-        st.subheader("📊 Agent Totals Summary")
+        st.subheader("📊 Agency Totals Summary")
         for row in results:
             st.metric(label=row['Agent'], value=f"{row['Total Beans']} Beans / {row['Diamonds']} Diamonds")
             st.caption(f"💎 Breakdown: {row['Diamond Breakdown']}")
