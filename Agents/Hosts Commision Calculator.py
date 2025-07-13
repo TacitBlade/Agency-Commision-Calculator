@@ -4,35 +4,34 @@ from io import BytesIO
 
 # Tiered salary structure
 TIERED_SALARY = [
-    
-(6000000, 10200),
-(5000000, 9200),
-(4000000, 7650),
-(3000000, 5900),
-(2000000, 3925),
-(1500000, 2950),
-(1000000, 2000),
-(800000, 1613),
-(600000, 1220),
-(450000, 945),
-(350000, 735),
-(250000, 525),
-(170000, 361),
-(130000, 281),
-(120000, 263),
-(110000, 243),
-(100000, 221),
-(90000, 200),
-(80000, 178),
-(70000, 156),
-(60000, 134),
-(50000, 112),
-(40000, 89),
-(30000, 67),
-(20000, 45),
-(10000, 23),
-(5000, 23),
-(0, 0)
+    (6000000, 10200),
+    (5000000, 9200),
+    (4000000, 7650),
+    (3000000, 5900),
+    (2000000, 3925),
+    (1500000, 2950),
+    (1000000, 2000),
+    (800000, 1613),
+    (600000, 1220),
+    (450000, 945),
+    (350000, 735),
+    (250000, 525),
+    (170000, 361),
+    (130000, 281),
+    (120000, 263),
+    (110000, 243),
+    (100000, 221),
+    (90000, 200),
+    (80000, 178),
+    (70000, 156),
+    (60000, 134),
+    (50000, 112),
+    (40000, 89),
+    (30000, 67),
+    (20000, 45),
+    (10000, 23),
+    (5000, 23),
+    (0, 0)
 ]
 
 def get_salary_usd(beans_earned):
@@ -79,7 +78,7 @@ with st.form("bean_calc_form"):
     agents_input = []
 
     for i in range(int(num_agents)):
-        with st.expander(f"🧍 Agent {i+1} Details", expanded=True):
+        with st.expander(f"🧝 Agent {i+1} Details", expanded=True):
             name = st.text_input("Name", key=f"name_{i}")
             beans_earned = st.number_input("Beans Earned by Host 🎭", min_value=0.0, step=100.0, key=f"beans_{i}")
             salary_usd = get_salary_usd(beans_earned)
@@ -103,11 +102,11 @@ if submitted:
 
             results.append({
                 "Agent": agent["name"],
-                "Beans Earned": int(agent["beans_earned"]) if agent["beans_earned"].is_integer() else round(agent["beans_earned"], 2),
-                "Salary (USD)": int(agent["salary_usd"]) if agent["salary_usd"].is_integer() else round(agent["salary_usd"], 2),
-                "Salary in Beans": int(salary_beans) if salary_beans.is_integer() else round(salary_beans, 2),
-                "5% Commission": int(commission) if commission.is_integer() else round(commission, 2),
-                "Total Beans": int(total) if total.is_integer() else round(total, 2),
+                "Beans Earned": int(agent["beans_earned"]),
+                "Salary (USD)": int(agent["salary_usd"]),
+                "Salary in Beans": int(salary_beans),
+                "5% Commission": int(commission),
+                "Total Beans": int(total),
                 "Diamonds": int(diamonds),
                 "Diamond Breakdown": breakdown
             })
@@ -122,14 +121,14 @@ if submitted:
         # Totals
         total_all = df["Total Beans"].sum()
         total_diamonds = df["Diamonds"].sum()
-        st.info(f"💰 **Total Beans Across All Agents:** {int(total_all) if total_all.is_integer() else round(total_all, 2)}")
-        st.success(f"💎 **Total Diamonds for All Agents:** {total_diamonds}")
+        st.info(f"💰 **Total Beans Across All Agents:** {int(total_all)}")
+        st.success(f"💫 **Total Diamonds for All Agents:** {total_diamonds}")
 
         # Excel download
         output = BytesIO()
         df.to_excel(output, index=False, sheet_name='Agent Beans')
         st.download_button(
-            "📥 Download Results as Excel",
+            "📅 Download Results as Excel",
             output.getvalue(),
             file_name="agent_bean_results.xlsx",
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -138,6 +137,5 @@ if submitted:
         # Per-agent breakdown
         st.subheader("📊 Agent Totals Summary")
         for row in results:
-            bean_value = int(row['Total Beans']) if row['Total Beans'] == int(row['Total Beans']) else round(row['Total Beans'], 2)
-            st.metric(label=row['Agent'], value=f"{bean_value} Beans / {row['Diamonds']} Diamonds")
-            st.caption(f"💎 Breakdown: {row['Diamond Breakdown']}")
+            st.metric(label=row['Agent'], value=f"{row['Total Beans']} Beans / {row['Diamonds']} Diamonds")
+            st.caption(f"💫 Breakdown: {row['Diamond Breakdown']}")
