@@ -139,3 +139,8 @@ if submitted:
         for row in results:
             st.metric(label=row['Agent'], value=f"{row['Total Beans']} Beans / {row['Diamonds']} Diamonds")
             st.caption(f"💎 Breakdown: {row['Diamond Breakdown']}")
+
+st.markdown(
+    "<div style='text-align: center; font-size: 14px; margin-top: 32px;'>© 2025 Alpha Agency & T Star Agency. All rights reserved.</div>",
+    unsafe_allow_html=True
+)
