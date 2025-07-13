@@ -69,8 +69,8 @@ def convert_beans_to_diamonds(beans):
     return diamonds, ', '.join(breakdown)
 
 # Streamlit app configuration
-st.set_page_config(page_title="Agent Bean Calculator", layout="centered")
-st.title("🎯 Agent Bean Calculator")
+st.set_page_config(page_title="Agency Commission Calculator", layout="centered")
+st.title("🎯 Agency Commission Calculator")
 
 # Form input
 with st.form("bean_calc_form"):
@@ -80,7 +80,7 @@ with st.form("bean_calc_form"):
     for i in range(int(num_agents)):
         with st.expander(f"🧝 Agent {i+1} Details", expanded=True):
             name = st.text_input("Name", key=f"name_{i}")
-            beans_earned = st.number_input("Beans Earned by Host 🎭", min_value=0.0, step=100.0, key=f"beans_{i}")
+            beans_earned = st.number_input("Beans🫘 Earned by Host 🎭", min_value=0.0, step=100.0, key=f"beans_{i}")
             salary_usd = get_salary_usd(beans_earned)
             agents_input.append({
                 "name": name.strip(),
@@ -121,8 +121,8 @@ if submitted:
         # Totals
         total_all = df["Total Beans"].sum()
         total_diamonds = df["Diamonds"].sum()
-        st.info(f"💰 **Total Beans Across All Agents:** {int(total_all)}")
-        st.success(f"💫 **Total Diamonds for All Agents:** {total_diamonds}")
+        st.info(f"💰 **Total Beans Across All Hosts:** {int(total_all)}")
+        st.success(f"💎 **Total Diamonds for Agency:** {total_diamonds}")
 
         # Excel download
         output = BytesIO()
